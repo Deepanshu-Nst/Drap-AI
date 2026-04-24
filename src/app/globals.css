@@ -1,0 +1,142 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
+
+/* ─── Design Tokens ─────────────────────────────────────── */
+:root {
+  --font-display: 'Cormorant Garamond', serif;
+  --font-body: 'Inter', sans-serif;
+
+  --accent:       #A67C52;
+  --accent-light: #C49A6C;
+  --accent-dark:  #8B633D;
+  --bg-primary:   #FCFBF8;
+  --bg-secondary: #F4F2EC;
+  --bg-tertiary:  #EBE8E0;
+  --text-main:    #1A1A1A;
+  --text-muted:   #6B7280;
+  --border:       #E5E0D8;
+}
+
+/* ─── Base ──────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--bg-primary);
+  color: var(--text-main);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar       { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg-primary); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+/* ─── Typography Helpers ────────────────────────────────── */
+.font-display { font-family: var(--font-display) !important; }
+
+.text-gold-gradient {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 50%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─── Animations ────────────────────────────────────────── */
+@keyframes shimmer {
+  0%   { background-position: -1000px 0; }
+  100% { background-position:  1000px 0; }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0  0px rgba(184,163,134,0.15); }
+  50%       { box-shadow: 0 0 0 12px rgba(184,163,134,0);   }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px);  }
+  50%       { transform: translateY(-12px); }
+}
+
+@keyframes scan-line {
+  0%   { top: 0%;   opacity: 1;   }
+  100% { top: 100%; opacity: 0.1; }
+}
+
+/* ─── Utility Classes ───────────────────────────────────── */
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.pulse-gold {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.shimmer {
+  background: linear-gradient(90deg, #161618 25%, #202022 50%, #161618 75%);
+  background-size: 1000px 100%;
+  animation: shimmer 2s infinite linear;
+}
+
+/* ─── Button Styles ─────────────────────────────────────── */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--text-main);
+  color: var(--bg-primary);
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  background: var(--accent);
+  color: var(--bg-primary);
+  box-shadow: 0 8px 24px rgba(184,163,134,0.15);
+}
+
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  color: var(--text-main);
+  background: transparent;
+  cursor: pointer;
+  font-weight: 400;
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+}
+.btn-outline:hover {
+  border-color: var(--text-muted);
+  background: var(--bg-secondary);
+}
+
+/* ─── Gallery card hover ────────────────────────────────── */
+.gallery-card {
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.gallery-card:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 24px 48px rgba(0,0,0,0.5);
+}
+
+/* ─── Input focus ───────────────────────────────────────── */
+input:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--text-main) !important;
+  box-shadow: none;
+}
+
+/* ─── Section divider ───────────────────────────────────── */
+.section-divider {
+  width: 60px;
+  height: 1px;
+  background: var(--border);
+}
