@@ -52,7 +52,7 @@ async function runHuggingFaceGeneration(jobId: string, prompt: string, hfToken: 
           seed: seed,
           num_inference_steps: 4,
         }
-      });
+      }, { outputType: 'blob' });
 
       // Read image blob and convert to base64 so frontend can display it
       const arrayBuffer = await blob.arrayBuffer();
