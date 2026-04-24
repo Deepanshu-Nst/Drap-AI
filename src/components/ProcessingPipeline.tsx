@@ -12,9 +12,13 @@ interface ProcessingPipelineProps {
   phase: Phase;
   onComplete: () => void;
   onStart: () => void;
+  onCancel?: () => void;
+  completedAngles?: number;
+  totalAngles?: number;
+  analysisState?: 'idle' | 'analyzing' | 'generating' | 'done';
 }
 
-export default function ProcessingPipeline({ saree, phase, onComplete, onStart }: ProcessingPipelineProps) {
+export default function ProcessingPipeline({ saree, phase, onComplete, onStart, onCancel, completedAngles = 0, totalAngles = 10, analysisState = 'idle' }: ProcessingPipelineProps) {
   const [currentStep, setCurrentStep] = useState(-1);
   const [stepProgress, setStepProgress] = useState(0);
   const [overallProgress, setOverallProgress] = useState(0);
@@ -60,7 +64,7 @@ export default function ProcessingPipeline({ saree, phase, onComplete, onStart }
 
     intervalRef.current = setInterval(tick, 80);
     return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
-  }, [phase, onComplete, totalDuration]);
+  }, [phase, onComplete, totalDuration, analysisState]);
 
   if (!saree && phase === 'idle') return null;
 
@@ -88,10 +92,15 @@ export default function ProcessingPipeline({ saree, phase, onComplete, onStart }
             className="font-display text-4xl md:text-5xl font-light mb-4 text-white"
             style={{ fontFamily: 'var(--font-display)' }}
           >
-            AI is <em style={{ color: 'var(--gold)' }}>Processing</em> Your Saree
+            {analysisState === 'analyzing' && <>AI is <em style={{ color: 'var(--gold)' }}>Analyzing</em> Your Saree</>}
+            {analysisState === 'generating' && <>AI is <em style={{ color: 'var(--gold)' }}>Generating</em> Angles</>}
+            {analysisState === 'done' && <><em style={{ color: 'var(--gold)' }}>Completed</em> Processing</>}
+            {analysisState === 'idle' && <>AI is <em style={{ color: 'var(--gold)' }}>Processing</em> Your Saree</>}
           </h2>
           <p className="text-lg" style={{ color: 'rgba(255,255,255,0.5)' }}>
-            Our 6-stage AI pipeline transforms your fabric into a photorealistic model shoot.
+            {analysisState === 'analyzing' ? 'Extracting fabric, motifs, and texture details...' : 
+             analysisState === 'generating' ? `Generating angle ${completedAngles + 1} of ${totalAngles}...` :
+             'Our 6-stage AI pipeline transforms your fabric into a photorealistic model shoot.'}
           </p>
         </motion.div>
 
@@ -191,19 +200,31 @@ export default function ProcessingPipeline({ saree, phase, onComplete, onStart }
             )}
 
             {phase === 'processing' && (
-              <div className="flex items-center justify-center gap-3 py-2">
-                <div className="flex gap-1">
-                  {[0, 1, 2].map((i) => (
-                    <motion.div
-                      key={i}
-                      className="w-1.5 h-1.5 rounded-full"
-                      style={{ background: 'var(--gold)' }}
-                      animate={{ scale: [1, 1.5, 1], opacity: [0.5, 1, 0.5] }}
-                      transition={{ duration: 1, repeat: Infinity, delay: i * 0.2 }}
-                    />
-                  ))}
+              <div className="flex flex-col items-center justify-center gap-3 py-2">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="flex gap-1">
+                    {[0, 1, 2].map((i) => (
+                      <motion.div
+                        key={i}
+                        className="w-1.5 h-1.5 rounded-full"
+                        style={{ background: 'var(--gold)' }}
+                        animate={{ scale: [1, 1.5, 1], opacity: [0.5, 1, 0.5] }}
+                        transition={{ duration: 1, repeat: Infinity, delay: i * 0.2 }}
+                      />
+                    ))}
+                  </div>
+                  <span className="text-sm font-semibold text-white">
+                    {analysisState === 'analyzing' ? 'Analyzing saree...' : `Generating ${completedAngles}/${totalAngles}`}
+                  </span>
                 </div>
-                <span className="text-sm" style={{ color: 'rgba(255,255,255,0.5)' }}>Processing your saree…</span>
+                {onCancel && (
+                  <button 
+                    onClick={onCancel}
+                    className="text-xs uppercase tracking-widest text-red-400 hover:text-red-300 transition-colors border border-red-500/30 rounded-full px-4 py-1"
+                  >
+                    Cancel Generation
+                  </button>
+                )}
               </div>
             )}
           </motion.div>
